@@ -44,6 +44,9 @@ import java.util.Hashtable;
  */
 public class SimpleContext implements Context {
 
+	private static org.slf4j.Logger log = org.slf4j.LoggerFactory
+			.getLogger(SimpleContext.class);
+
 	private Hashtable table = new Hashtable();
 
 	/**
@@ -76,7 +79,12 @@ public class SimpleContext implements Context {
 	 * 
 	 */
 	public Object lookup(String name) throws NamingException {
-		return table.get(name);
+		log.trace("Looking for: " + name);
+		Object obj = table.get(name);
+		if (obj == null) {
+			throw new NamingException("Not Found: " + name);
+		}
+		return obj;
 	}
 
 	/**

@@ -11,6 +11,8 @@ import javax.sql.DataSource;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.rules.ExpectedException;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -53,14 +55,11 @@ public class TestJNDIUnitTestHelper {
 	private static org.slf4j.Logger log = org.slf4j.LoggerFactory
 			.getLogger(TestJNDIUnitTestHelper.class);
 
-	/**
-	 * Method testGetConnection Simply creates the JNDI DataSource, gets a
-	 * connection and frees it. Deemed successful if no exceptions are thrown.
-	 */
-	@Test
-	public void testGetConnection() {
+	@Rule
+	public final ExpectedException exception = ExpectedException.none();
 
-		// ok so this code usually goes in the setUp but...
+	@Before
+	public void setup() {
 		if (JNDIUnitTestHelper.notInitialized()) {
 			try {
 				JNDIUnitTestHelper.init("jndi_unit_test_helper.properties");
@@ -77,6 +76,15 @@ public class TestJNDIUnitTestHelper {
 						+ urie.getMessage());
 			}
 		}
+	}
+
+	/**
+	 * Method testGetConnection Simply creates the JNDI DataSource, gets a
+	 * connection and frees it. Deemed successful if no exceptions are thrown.
+	 */
+	@Test
+	public void testGetConnection() {
+
 		try {
 			InitialContext initCtx = new InitialContext();
 			DataSource ds = (DataSource) initCtx.lookup("java/TestDB");
@@ -119,23 +127,6 @@ public class TestJNDIUnitTestHelper {
 	@Test
 	public void testGetEnvConnection() {
 
-		// ok so this code usually goes in the setUp but...
-		if (JNDIUnitTestHelper.notInitialized()) {
-			try {
-				JNDIUnitTestHelper.init("jndi_unit_test_helper.properties");
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-				Assert.fail("IOException thrown : " + ioe.getMessage());
-			} catch (NamingException ne) {
-				ne.printStackTrace();
-				Assert.fail("NamingException thrown on Init : "
-						+ ne.getMessage());
-			} catch (java.net.URISyntaxException urie) {
-				urie.printStackTrace();
-				Assert.fail("URISyntaxException thrown on Init : "
-						+ urie.getMessage());
-			}
-		}
 		try {
 			InitialContext initCtx = new InitialContext();
 			javax.naming.Context envCtx = (javax.naming.Context) initCtx
@@ -178,6 +169,23 @@ public class TestJNDIUnitTestHelper {
 			e.printStackTrace();
 		}
 
+	}
+
+	@Test
+	public void testNoContext() throws javax.naming.NamingException {
+		InitialContext initCtx = new InitialContext();
+		exception.expect(NamingException.class);
+		javax.naming.Context envCtx = (javax.naming.Context) initCtx
+				.lookup("not:here");
+	}
+
+	@Test
+	public void testNoDataSource() throws javax.naming.NamingException {
+		InitialContext initCtx = new InitialContext();
+		javax.naming.Context envCtx = (javax.naming.Context) initCtx
+				.lookup("java:comp/env");
+		exception.expect(NamingException.class);
+		DataSource ds = (DataSource) envCtx.lookup("java/TestNoDB");
 	}
 
 	/**
