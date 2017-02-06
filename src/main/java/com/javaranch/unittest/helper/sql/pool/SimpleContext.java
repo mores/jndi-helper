@@ -82,7 +82,9 @@ public class SimpleContext implements Context {
 		log.trace("Looking for: " + name);
 		Object obj = table.get(name);
 		if (obj == null) {
-			throw new NamingException("Not Found: " + name);
+			String errorMessage = "Not Found: " + name;
+			log.error(errorMessage);
+			throw new NamingException(errorMessage);
 		}
 		return obj;
 	}
