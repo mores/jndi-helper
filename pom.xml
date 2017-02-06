@@ -4,16 +4,16 @@
     <groupId>com.javaranch.unittest.helper.sql.pool</groupId>
     <artifactId>jndi-helper</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.7</version>
+    <version>1.0.8-SNAPSHOT</version>
     <name>${pom.artifactId}</name>
     <url>http://maven.apache.org</url>
 
     <properties>
         <fscontext.version>1.2-beta-3</fscontext.version>
-        <derby.version>10.4.1.3</derby.version> 
-        <slf4j.version>1.6.4</slf4j.version>
-        <log4j.version>1.2.13</log4j.version>
-        <junit.version>3.8.1</junit.version>
+        <derby.version>10.13.1.1</derby.version> 
+        <slf4j.version>1.7.22</slf4j.version>
+        <log4j.version>1.2.17</log4j.version>
+        <junit.version>4.12</junit.version>
     </properties>
 
     <dependencies>

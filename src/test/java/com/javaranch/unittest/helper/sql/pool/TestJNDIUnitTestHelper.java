@@ -1,8 +1,5 @@
 package com.javaranch.unittest.helper.sql.pool;
 
-import junit.framework.TestCase;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 import com.javaranch.unittest.helper.sql.pool.JNDIUnitTestHelper;
 import java.io.IOException;
 import javax.naming.InitialContext;
@@ -10,6 +7,11 @@ import javax.naming.NamingException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
+
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * <p>
@@ -46,23 +48,16 @@ import javax.sql.DataSource;
  * @author Carl Trusiak, Sheriff
  * @version 1.0
  */
-public class TestJNDIUnitTestHelper extends TestCase {
+public class TestJNDIUnitTestHelper {
 
-	/**
-	 * Constructor TestJNDIUnitTestHelper
-	 * 
-	 * 
-	 * @param method
-	 * 
-	 */
-	public TestJNDIUnitTestHelper(String method) {
-		super(method);
-	}
+	private static org.slf4j.Logger log = org.slf4j.LoggerFactory
+			.getLogger(TestJNDIUnitTestHelper.class);
 
 	/**
 	 * Method testGetConnection Simply creates the JNDI DataSource, gets a
 	 * connection and frees it. Deemed successful if no exceptions are thrown.
 	 */
+	@Test
 	public void testGetConnection() {
 
 		// ok so this code usually goes in the setUp but...
@@ -71,13 +66,15 @@ public class TestJNDIUnitTestHelper extends TestCase {
 				JNDIUnitTestHelper.init("jndi_unit_test_helper.properties");
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
-				fail("IOException thrown : " + ioe.getMessage());
+				Assert.fail("IOException thrown : " + ioe.getMessage());
 			} catch (NamingException ne) {
 				ne.printStackTrace();
-				fail("NamingException thrown on Init : " + ne.getMessage());
+				Assert.fail("NamingException thrown on Init : "
+						+ ne.getMessage());
 			} catch (java.net.URISyntaxException urie) {
 				urie.printStackTrace();
-				fail("URISyntaxException thrown on Init : " + urie.getMessage());
+				Assert.fail("URISyntaxException thrown on Init : "
+						+ urie.getMessage());
 			}
 		}
 		try {
@@ -89,16 +86,16 @@ public class TestJNDIUnitTestHelper extends TestCase {
 			java.sql.Statement smt = conn.createStatement();
 			java.sql.ResultSet rs = smt.executeQuery(sql);
 			while (rs.next()) {
-				System.out.println("Here: " + rs.getString(1));
+				log.trace("Here: " + rs.getString(1));
 			}
 
 			conn.close();
 		} catch (NamingException ne) {
 			ne.printStackTrace();
-			fail("NamingException thrown on lookup : " + ne.getMessage());
+			Assert.fail("NamingException thrown on lookup : " + ne.getMessage());
 		} catch (SQLException sqle) {
 			sqle.printStackTrace();
-			fail("SQLException thrown on lookup : " + sqle.getMessage());
+			Assert.fail("SQLException thrown on lookup : " + sqle.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -106,19 +103,20 @@ public class TestJNDIUnitTestHelper extends TestCase {
 		try {
 			InitialContext initCtx = new InitialContext();
 			String aString = (String) initCtx.lookup("java/TestString");
-			System.out.println("Here: " + aString);
+			log.trace("Here: " + aString);
 
 			if (!aString.equals("plain O string")) {
-				fail("Cound not find the string I was looking for");
+				Assert.fail("Cound not find the string I was looking for");
 			}
 		} catch (NamingException ne) {
 			ne.printStackTrace();
-			fail("NamingException thrown on lookup : " + ne.getMessage());
+			Assert.fail("NamingException thrown on lookup : " + ne.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	@Test
 	public void testGetEnvConnection() {
 
 		// ok so this code usually goes in the setUp but...
@@ -127,13 +125,15 @@ public class TestJNDIUnitTestHelper extends TestCase {
 				JNDIUnitTestHelper.init("jndi_unit_test_helper.properties");
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
-				fail("IOException thrown : " + ioe.getMessage());
+				Assert.fail("IOException thrown : " + ioe.getMessage());
 			} catch (NamingException ne) {
 				ne.printStackTrace();
-				fail("NamingException thrown on Init : " + ne.getMessage());
+				Assert.fail("NamingException thrown on Init : "
+						+ ne.getMessage());
 			} catch (java.net.URISyntaxException urie) {
 				urie.printStackTrace();
-				fail("URISyntaxException thrown on Init : " + urie.getMessage());
+				Assert.fail("URISyntaxException thrown on Init : "
+						+ urie.getMessage());
 			}
 		}
 		try {
@@ -147,16 +147,16 @@ public class TestJNDIUnitTestHelper extends TestCase {
 			java.sql.Statement smt = conn.createStatement();
 			java.sql.ResultSet rs = smt.executeQuery(sql);
 			while (rs.next()) {
-				System.out.println("Here: " + rs.getString(1));
+				log.trace("Here: " + rs.getString(1));
 			}
 
 			conn.close();
 		} catch (NamingException ne) {
 			ne.printStackTrace();
-			fail("NamingException thrown on lookup : " + ne.getMessage());
+			Assert.fail("NamingException thrown on lookup : " + ne.getMessage());
 		} catch (SQLException sqle) {
 			sqle.printStackTrace();
-			fail("SQLException thrown on lookup : " + sqle.getMessage());
+			Assert.fail("SQLException thrown on lookup : " + sqle.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -166,14 +166,14 @@ public class TestJNDIUnitTestHelper extends TestCase {
 			javax.naming.Context envCtx = (javax.naming.Context) initCtx
 					.lookup("java:comp/env");
 			String aString = (String) envCtx.lookup("java/Test2String");
-			System.out.println("Here: " + aString);
+			log.trace("Here: " + aString);
 
 			if (!aString.equals("plain 1 string")) {
-				fail("Cound not find the string I was looking for");
+				Assert.fail("Cound not find the string I was looking for");
 			}
 		} catch (NamingException ne) {
 			ne.printStackTrace();
-			fail("NamingException thrown on lookup : " + ne.getMessage());
+			Assert.fail("NamingException thrown on lookup : " + ne.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -185,6 +185,7 @@ public class TestJNDIUnitTestHelper extends TestCase {
 	 * 
 	 * 
 	 */
+	@After
 	public void tearDown() {
 
 		try {
@@ -194,29 +195,4 @@ public class TestJNDIUnitTestHelper extends TestCase {
 		}
 	}
 
-	/**
-	 * Method suite
-	 * 
-	 * 
-	 * @return TestSuite to be ran.
-	 * 
-	 */
-	public static Test suite() {
-
-		TestSuite suite = new TestSuite();
-		suite.addTest(new TestJNDIUnitTestHelper("testGetConnection"));
-		suite.addTest(new TestJNDIUnitTestHelper("testGetEnvConnection"));
-		return suite;
-	}
-
-	/**
-	 * Method main
-	 * 
-	 * 
-	 * @param args
-	 * 
-	 */
-	public static void main(String args[]) {
-		junit.textui.TestRunner.run(suite());
-	}
 }
