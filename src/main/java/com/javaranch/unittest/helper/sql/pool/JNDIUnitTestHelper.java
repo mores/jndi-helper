@@ -92,6 +92,12 @@ public class JNDIUnitTestHelper {
 		java.io.InputStream istream = cl.getResourceAsStream(fileName);
 
 		if (istream == null) {
+			ClassLoader applicationClassLoader = JNDIUnitTestHelper.class
+					.getClassLoader();
+			istream = applicationClassLoader.getResourceAsStream(fileName);
+		}
+
+		if (istream == null) {
 			// Fallback to look for actual file
 			java.io.File f = new java.io.File(fileName);
 			istream = new FileInputStream(f);
@@ -110,54 +116,60 @@ public class JNDIUnitTestHelper {
 
 		String pools = props
 				.getProperty("com.javaranch.unittest.helper.sql.pools");
-		java.util.StringTokenizer st = new java.util.StringTokenizer(pools, ",");
-		while (st.hasMoreTokens()) {
-			String poolName = "com.javaranch.unittest.helper.sql.pool."
-					+ st.nextToken();
-			log.debug("Loading: " + poolName);
+		if (pools != null) {
+			java.util.StringTokenizer st = new java.util.StringTokenizer(pools,
+					",");
+			while (st.hasMoreTokens()) {
+				String poolName = "com.javaranch.unittest.helper.sql.pool."
+						+ st.nextToken();
+				log.debug("Loading: " + poolName);
 
-			SimpleDataSource source = new SimpleDataSource();
+				SimpleDataSource source = new SimpleDataSource();
 
-			source.dbDriver = props.getProperty(poolName + ".dbDriver");
-			source.dbServer = props.getProperty(poolName + ".dbServer");
-			source.dbLogin = props.getProperty(poolName + ".dbLogin");
-			source.dbPassword = props.getProperty(poolName + ".dbPassword");
-			jndiEnv = props.getProperty(poolName + ".JNDIEnv");
-			jndiName = props.getProperty(poolName + ".JNDIName");
+				source.dbDriver = props.getProperty(poolName + ".dbDriver");
+				source.dbServer = props.getProperty(poolName + ".dbServer");
+				source.dbLogin = props.getProperty(poolName + ".dbLogin");
+				source.dbPassword = props.getProperty(poolName + ".dbPassword");
+				jndiEnv = props.getProperty(poolName + ".JNDIEnv");
+				jndiName = props.getProperty(poolName + ".JNDIName");
 
-			log.debug("Driver: " + source.dbDriver);
+				log.debug("Driver: " + source.dbDriver);
 
-			if (jndiEnv != null) {
-				// Register the data source to JNDI naming service
-				Context envCtx = new InitialContext(env);
-				ctx.bind(jndiEnv, envCtx);
+				if (jndiEnv != null) {
+					// Register the data source to JNDI naming service
+					Context envCtx = new InitialContext(env);
+					ctx.bind(jndiEnv, envCtx);
+				}
+
+				ctx.bind(jndiName, source);
+
 			}
-
-			ctx.bind(jndiName, source);
-
 		}
 
 		String strings = props
 				.getProperty("com.javaranch.unittest.helper.strings");
-		st = new java.util.StringTokenizer(strings, ",");
-		while (st.hasMoreTokens()) {
-			String stringName = "com.javaranch.unittest.helper.string."
-					+ st.nextToken();
-			log.debug("Loading: " + stringName);
+		if (strings != null) {
+			java.util.StringTokenizer st = new java.util.StringTokenizer(
+					strings, ",");
+			while (st.hasMoreTokens()) {
+				String stringName = "com.javaranch.unittest.helper.string."
+						+ st.nextToken();
+				log.debug("Loading: " + stringName);
 
-			String value = props.getProperty(stringName + ".value");
-			jndiEnv = props.getProperty(stringName + ".JNDIEnv");
-			jndiName = props.getProperty(stringName + ".JNDIName");
+				String value = props.getProperty(stringName + ".value");
+				jndiEnv = props.getProperty(stringName + ".JNDIEnv");
+				jndiName = props.getProperty(stringName + ".JNDIName");
 
-			log.debug("String: " + value);
+				log.debug("String: " + value);
 
-			if (jndiEnv != null) {
-				// Register the data source to JNDI naming service
-				Context envCtx = new InitialContext(env);
-				ctx.bind(jndiEnv, envCtx);
+				if (jndiEnv != null) {
+					// Register the data source to JNDI naming service
+					Context envCtx = new InitialContext(env);
+					ctx.bind(jndiEnv, envCtx);
+				}
+
+				ctx.bind(jndiName, value);
 			}
-
-			ctx.bind(jndiName, value);
 		}
 
 		initialized = true;
