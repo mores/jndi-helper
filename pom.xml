@@ -4,7 +4,7 @@
     <groupId>com.javaranch.unittest.helper.sql.pool</groupId>
     <artifactId>jndi-helper</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.8-SNAPSHOT</version>
+    <version>1.0.9-SNAPSHOT</version>
     <name>${pom.artifactId}</name>
     <url>http://maven.apache.org</url>
 
