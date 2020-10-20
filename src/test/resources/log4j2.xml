@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorinterval="30" status="INFO" strict="true" name="amp" xmlns="http://logging.apache.org/log4j/2.0/config">
+
+	<Appenders>
+		<Console name="CONSOLE" target="SYSTEM_OUT">
+			<PatternLayout pattern="%16d %-5p [%c{1}:%L] (%X{name}) %m%n"/>
+		</Console>
+	</Appenders>
+
+	<Loggers>
+		<Root level="WARN" additivity="false">
+			<AppenderRef ref="CONSOLE" />
+		</Root>
+
+		<Logger name="com.javaranch.unittest.helper.sql.pool" level="DEBUG" additivity="false">
+			<AppenderRef ref="CONSOLE" />
+		</Logger>
+	</Loggers>
+</Configuration> 
